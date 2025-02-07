@@ -1,0 +1,9 @@
+version: 2
+
+seeds:
+  - name: lkp_divisions
+    config:
+      schema: LOOKUP_DEV
+  - name: lkp_categories
+    config:
+      schema: LOOKUP_DEV
