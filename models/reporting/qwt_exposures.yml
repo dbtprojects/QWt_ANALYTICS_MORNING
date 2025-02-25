@@ -1,0 +1,21 @@
+version: 2
+
+exposures:
+  - name: rpt_sales_by_offices
+    type: dashboard
+    maturity: high
+    url: https://www.google.com
+    description: "total sales segregatted by office locations"
+
+    depends_on:
+      - ref('fct_orders')
+      - ref('dim_employees')
+
+    owner:
+      name: qwtadmin
+      email: info@qwt.com
+    
+
+
+
+      

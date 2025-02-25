@@ -1,4 +1,4 @@
-{{config(materialized = 'table', schema = 'transforming_dev')}}
+{{config(materialized = 'table', schema = env_var('DBT_TRANSFORMSCHEMA', 'TRANSFORMING_DEV'))}}
 
 select 
 o.orderid,

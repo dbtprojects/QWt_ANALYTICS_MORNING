@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'QWT_ANALYTICS_MORNING'
 version: '1.0.0'
 config-version: 2
 
@@ -24,6 +24,10 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+vars:
+  v_city: "Stockholm"
+  "dbt_date:time_zone": "Asia/Kolkata"
+  dbt_dq_tool_schema: AUDITING_DEV
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -35,5 +39,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 
+on-run-start: "alter session set timezone = 'Asia/Kolkata';"
+on-run-end: "{{ dq_tools.store_test_results(results) }}"
+
 models:
-  +materialized: view
+  dq_tools:
+    +schema: "{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}"
+
+  pre-hook:
+    - "insert into {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.audit_qwt_models(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp, null, null);"
+  post-hook:
+    - "update {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.audit_qwt_models set endtime = current_timestamp , duration = datediff('second', starttime, current_timestamp) where modelname = '{{this}}'; "
