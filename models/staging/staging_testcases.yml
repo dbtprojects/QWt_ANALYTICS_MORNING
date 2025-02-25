@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "{{doc('stg_customers_desc')}}"
+    columns:
+      - name: customerid
+        description: "{{doc('stg_customerid_desc')}}"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    description: "product master data for qwt analytics"
+    columns:
+      - name: productid
+        description: "identify each product uniquely in products master data"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_shipments
+    description: shipments data for orders loaded from raw shipment
+    columns:
+      - name: status
+        description: current shipment status for each order placed in orders table
+        tests:
+          - accepted_values:
+              values: ['shipped', 'returned', 'ordered', 'replaced']
+
+  - name: stg_orderdetails
+    description: deatiled orders info maintained for parent ordrers table
+    columns:
+      - name: orderid
+        description: order id represnts each order placed by every customer 
+        tests:
+          - relationships:
+              field: orderid
+              to: ref('stg_orders')
+
+  - name: stg_employees
+    description: employee master data loaded from raw employees
+    columns:
+      - name: empid
+        description: unique identifier for each employee
+        tests:
+          - unique
+          - not_null

@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+  
+  - name: rpt_sales_by_office
+    type: dashboard
+    maturity: high
+    url: https://www.google.com
+    description: "sales by offices for all customers"
+
+    depends_on:
+      - ref('fct_orders')
+      - ref('dim_employees')
+
+    owner: 
+      name: david
+      email: david@qwt.com
+      
